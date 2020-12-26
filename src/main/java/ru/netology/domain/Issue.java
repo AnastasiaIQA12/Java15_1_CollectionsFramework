@@ -1,9 +1,10 @@
 package ru.netology.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,11 +14,12 @@ public class Issue {
   private String title;
   private boolean status;//status=true-открыт, status=false-закрыт
   private int dateCreation;
+  private int dateUpdate;
   private Author author;
-  private Label label;
+  private Set<Label> label;
   private String project;
   private String milestone;
-  private Author assignee;
+  private Set<Author> assignee;
   private int countComment;
 
 }

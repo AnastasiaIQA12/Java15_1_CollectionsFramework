@@ -1,4 +1,6 @@
-package ru.netology.domain;
+package ru.netology.sort;
+
+import ru.netology.domain.Issue;
 
 import java.util.Comparator;
 

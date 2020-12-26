@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class Author {
+    public int id;
     public String name;
-    public String avatar;
+    public String avatar;//url foto
 }

@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Label {
+public class Label  {
+    private int id;
     private String color;
     private String topic;
     private String subtopic;
-}
+ }

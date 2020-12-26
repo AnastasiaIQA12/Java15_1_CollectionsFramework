@@ -4,67 +4,206 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import ru.netology.domain.*;
+import ru.netology.domain.Label;
+import ru.netology.sort.LeastCommented;
+import ru.netology.sort.MostCommented;
+import ru.netology.sort.NewestSort;
+import ru.netology.sort.OldesSort;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class IssueRepositoryTest {
+
     private IssueRepository repository = new IssueRepository();
-    private Author author1 = new Author("Ivan", "url:\\1");
-    private Author author2 = new Author("Sveta", "url:\\2");
-    private Author author3 = new Author("Kolia", "url:\\3");
-    private Label label1 = new Label("lightGreen", "component", "Kotlin");
-    private Label label2 = new Label("Green", "component", "Jupiter");
-    private Label label3 = new Label("lightGreen", "component", "OTA");
-    private Issue issue1 = new Issue(1, "Issue", true, 15122020, author1, label1, "Java8", "5.8M1", author2, 5);
-    private Issue issue2 = new Issue(2, "Issue", false, 15102020, author2, label2, "Java8", "5.8M1", author2, 3);
-    private Issue issue3 = new Issue(3, "Issue", true, 15082020, author3, label3, "Java8", "5.8M1", author2, 7);
+    private Author author1 = new Author(1,"Ivan", "url:\\1");
+    private Author author2 = new Author(2,"Sveta", "url:\\2");
+    private Author author3 = new Author(3,"Kolia", "url:\\3");
+    private Set<Author> assignees=new HashSet<Author>();
+    private Label label1 = new Label(1,"lightGreen", "component", "Kotlin");
+    private Label label2 = new Label(2,"Green", "component", "Jupiter");
+    private Label label3 = new Label(3,"lightGreen", "component", "OTA");
+    private Set<Label> labels = new HashSet<>();
+    private Issue issue1 = new Issue(1, "Issue", true, 15122020, 24122020,author1, labels, "Java8", "5.8M1", assignees, 5);
+    private Issue issue2 = new Issue(2, "Issue", false, 15082020, 17092020,author2, labels, "Java8", "5.8M1", assignees, 3);
+    private Issue issue3 = new Issue(3, "Issue", true, 15102020, 13122020,author3, labels, "Java8", "5.8M1", assignees, 7);
 
     @Nested
-    class Empty {
+    class MultipleIssue {
+        @BeforeEach
+        public void setUp() {
+            labels.add(label1);
+            labels.add(label2);
+            assignees.add(author2);
+            repository.add(issue1);
+            repository.add(issue2);
+            repository.add(issue3);
+        }
+
         @Test
         void shouldAddIssue() {
-            repository.getAll();
+            List<Issue> actual = repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue1);
+            expected.add(issue2);
+            expected.add(issue3);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldOutputListAllOpenIssue() {
-            repository.findOpen(repository.getAll());
+            List<Issue> actual = repository.findOpen(repository.getAll());
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue1);
+            expected.add(issue3);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldOutputListAllCloseIssue() {
-            repository.findClose(repository.getAll());
+            List<Issue> actual = repository.findClose(repository.getAll());
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue2);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldOpenIssue() {
             repository.openById(repository.getAll(), 2);
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue1);
+            expected.add(new Issue(2, "Issue", true, 15082020, 17092020,author2, labels, "Java8", "5.8M1", assignees, 3));
+            expected.add(issue3);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldCloseIssue() {
             repository.closeById(repository.getAll(), 1);
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(new Issue(1, "Issue", false, 15122020, 24122020,author1, labels, "Java8", "5.8M1", assignees, 5));
+            expected.add(issue2);
+            expected.add(issue3);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldSortDateNew() {
             Collections.sort(repository.getAll(), new NewestSort());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue2);
+            expected.add(issue3);
+            expected.add(issue1);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldSortDateOld() {
             Collections.sort(repository.getAll(), new OldesSort());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue1);
+            expected.add(issue3);
+            expected.add(issue2);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldSortMostComment() {
             Collections.sort(repository.getAll(), new MostCommented());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue3);
+            expected.add(issue1);
+            expected.add(issue2);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldSortLeastComment() {
             Collections.sort(repository.getAll(), new LeastCommented());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue2);
+            expected.add(issue1);
+            expected.add(issue3);
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Nested
+    class Empty {
+        @Test
+        void shouldAddIssue() {
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldOutputListAllOpenIssue() {
+            List<Issue> actual=repository.findOpen(repository.getAll());
+            List<Issue> expected=new ArrayList<>();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldOutputListAllCloseIssue() {
+            List<Issue> actual=repository.findClose(repository.getAll());
+            List<Issue> expected=new ArrayList<>();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldOpenIssue() {
+            repository.openById(repository.getAll(), 2);
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldCloseIssue() {
+            repository.closeById(repository.getAll(), 1);
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldSortDateNew() {
+            Collections.sort(repository.getAll(), new NewestSort());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldSortDateOld() {
+            Collections.sort(repository.getAll(), new OldesSort());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldSortMostComment() {
+            Collections.sort(repository.getAll(), new MostCommented());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldSortLeastComment() {
+            Collections.sort(repository.getAll(), new LeastCommented());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            assertEquals(expected, actual);
         }
     }
 
@@ -77,102 +216,79 @@ class IssueRepositoryTest {
 
         @Test
         void shouldAddIssue() {
-            repository.getAll();
-        }
-
-        @Test
-        void shouldOutputListAllOpenIssue() {
-            repository.findOpen(repository.getAll());
-        }
-
-        @Test
-        void shouldOutputListAllCloseIssue() {
-            repository.findClose(repository.getAll());
-        }
-
-        @Test
-        void shouldOpenIssue() {
-            repository.openById(repository.getAll(), 2);
-        }
-
-        @Test
-        void shouldCloseIssue() {
-            repository.closeById(repository.getAll(), 1);
-        }
-
-        @Test
-        void shouldSortDateNew() {
-            Collections.sort(repository.getAll(), new NewestSort());
-        }
-
-        @Test
-        void shouldSortDateOld() {
-            Collections.sort(repository.getAll(), new OldesSort());
-        }
-
-        @Test
-        void shouldSortMostComment() {
-            Collections.sort(repository.getAll(), new MostCommented());
-        }
-
-        @Test
-        void shouldSortLeastComment() {
-            Collections.sort(repository.getAll(), new LeastCommented());
-        }
-    }
-
-    @Nested
-    class MultipleIssue {
-        @BeforeEach
-        public void setUp() {
-            repository.add(issue1);
-            repository.add(issue2);
-            repository.add(issue3);
-        }
-
-        @Test
-        void shouldAddIssue() {
             List<Issue> actual = repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue1);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldOutputListAllOpenIssue() {
             List<Issue> actual = repository.findOpen(repository.getAll());
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue1);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldOutputListAllCloseIssue() {
-            List<Issue> actual = repository.findClose(repository.getAll());
+            List<Issue> actual=repository.findClose(repository.getAll());
+            List<Issue> expected=new ArrayList<>();
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldOpenIssue() {
-            repository.openById(repository.getAll(), 2);
+            repository.openById(repository.getAll(), 1);
+            List<Issue> actual=repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(new Issue(1, "Issue", true, 15122020, 24122020,author1, labels, "Java8", "5.8M1", assignees, 5));
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldCloseIssue() {
             repository.closeById(repository.getAll(), 1);
+            List<Issue> actual=repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(new Issue(1, "Issue", false, 15122020, 24122020,author1, labels, "Java8", "5.8M1", assignees, 5));
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldSortDateNew() {
             Collections.sort(repository.getAll(), new NewestSort());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue1);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldSortDateOld() {
             Collections.sort(repository.getAll(), new OldesSort());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue1);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldSortMostComment() {
             Collections.sort(repository.getAll(), new MostCommented());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue1);
+            assertEquals(expected, actual);
         }
 
         @Test
         void shouldSortLeastComment() {
             Collections.sort(repository.getAll(), new LeastCommented());
+            List<Issue> actual= repository.getAll();
+            List<Issue> expected=new ArrayList<>();
+            expected.add(issue1);
+            assertEquals(expected, actual);
         }
     }
 }
