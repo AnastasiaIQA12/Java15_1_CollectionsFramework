@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -13,8 +14,8 @@ public class Issue {
   private int id;
   private String title;
   private boolean status;//status=true-открыт, status=false-закрыт
-  private int dateCreation;
-  private int dateUpdate;
+  private String dateCreation;
+  private String dateUpdate;
   private Author author;
   private Set<Label> label;
   private String project;

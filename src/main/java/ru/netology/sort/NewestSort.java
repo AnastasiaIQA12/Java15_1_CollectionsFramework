@@ -2,12 +2,33 @@ package ru.netology.sort;
 
 import ru.netology.domain.Issue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 
 public class NewestSort implements Comparator<Issue> {
+    Date data1;
+    Date data2;
 
     @Override
     public int compare(Issue o1, Issue o2) {
-        return o1.getDateCreation() - o2.getDateCreation();
+        String dat1= o1.getDateCreation();
+        String dat2= o2.getDateCreation();
+        SimpleDateFormat format=new SimpleDateFormat("dd.MM.yyyy");
+        try {
+            data1 = format.parse(dat1);
+        }
+        catch (ParseException e){
+            e.printStackTrace();
+        }
+        try {
+            data2 = format.parse(dat2);
+        }
+        catch (ParseException e){
+            e.printStackTrace();
+        }
+
+        return data2.compareTo(data1);
     }
 }

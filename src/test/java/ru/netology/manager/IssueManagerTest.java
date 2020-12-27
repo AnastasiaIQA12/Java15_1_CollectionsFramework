@@ -25,9 +25,9 @@ class IssueManagerTest {
     private Label label2 = new Label(2, "Green", "component", "Jupiter");
     private Label label3 = new Label(3, "lightGreen", "component", "OTA");
     private Set<Label> labels = new HashSet<>();
-    private Issue issue1 = new Issue(1, "Issue", true, 15122020, 241220020, author1, labels, "Java8", "5.8M1", assignees, 5);
-    private Issue issue2 = new Issue(2, "Issue", false, 15102020, 13122020, author2, labels, "Java8", "5.8M1", assignees, 3);
-    private Issue issue3 = new Issue(3, "Issue", true, 15082020, 17092020, author1, labels, "Java8", "5.8M1", assignees, 7);
+    private Issue issue1 = new Issue(1, "Issue", true, "15122020","26.12.2020", author1, labels, "Java8", "5.8M1", assignees, 5);
+    private Issue issue2 = new Issue(2, "Issue", false, "15102020", "13.09.2020",author2, labels, "Java8", "5.8M1", assignees, 3);
+    private Issue issue3 = new Issue(3, "Issue", true, "15082020", "12.12.2020", author1, labels, "Java8", "5.8M1", assignees, 7);
 
     @Nested
     class MultipleIssue {

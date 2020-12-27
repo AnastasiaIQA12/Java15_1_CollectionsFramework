@@ -1,9 +1,9 @@
 package ru.netology.repository;
 
 import ru.netology.domain.Issue;
+import ru.netology.sort.NewestSort;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class IssueRepository {
@@ -52,6 +52,5 @@ public class IssueRepository {
             }
         }
     }
-
 
 }

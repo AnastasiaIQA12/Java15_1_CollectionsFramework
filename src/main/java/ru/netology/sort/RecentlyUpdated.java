@@ -7,14 +7,14 @@ import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 
-public class OldesSort implements Comparator<Issue> {
+public class RecentlyUpdated implements Comparator<Issue> {
     Date data1;
     Date data2;
 
     @Override
     public int compare(Issue o1, Issue o2) {
-        String dat1= o1.getDateCreation();
-        String dat2= o2.getDateCreation();
+        String dat1= o1.getDateUpdate();
+        String dat2= o2.getDateUpdate();
         SimpleDateFormat format=new SimpleDateFormat("dd.MM.yyyy");
         try {
             data1 = format.parse(dat1);
@@ -29,6 +29,6 @@ public class OldesSort implements Comparator<Issue> {
             e.printStackTrace();
         }
 
-        return data1.compareTo(data2);
+        return data2.compareTo(data1);
     }
 }
